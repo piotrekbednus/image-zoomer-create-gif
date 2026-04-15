@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Zoom GIF Maker</title>
+    <style>
+      :root {
+        --bg: #f4efe7;
+        --panel: #fffaf2;
+        --ink: #1d1d1b;
+        --muted: #6a6258;
+        --accent: #b14d2b;
+        --accent-dark: #8f3517;
+        --line: #ddcfbf;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at top left, rgba(177, 77, 43, 0.18), transparent 28%),
+          linear-gradient(180deg, #f8f3ea 0%, var(--bg) 100%);
+      }
+
+      .page {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 32px 20px 56px;
+      }
+
+      .hero {
+        margin-bottom: 24px;
+      }
+
+      .eyebrow {
+        margin: 0 0 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.18em;
+        font-size: 12px;
+        color: var(--accent);
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(34px, 6vw, 68px);
+        line-height: 0.95;
+        max-width: 13ch;
+      }
+
+      .subtitle {
+        max-width: 680px;
+        margin: 14px 0 0;
+        color: var(--muted);
+        font-size: 18px;
+        line-height: 1.5;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: minmax(320px, 460px) minmax(0, 1fr);
+        gap: 22px;
+        align-items: start;
+      }
+
+      .panel {
+        background: rgba(255, 250, 242, 0.92);
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        box-shadow: 0 16px 50px rgba(57, 41, 28, 0.08);
+        backdrop-filter: blur(10px);
+      }
+
+      form.panel {
+        padding: 22px;
+      }
+
+      .preview {
+        padding: 22px;
+        min-height: 100%;
+      }
+
+      .section {
+        margin-top: 18px;
+        padding-top: 18px;
+        border-top: 1px solid var(--line);
+      }
+
+      .section:first-of-type {
+        margin-top: 0;
+        padding-top: 0;
+        border-top: 0;
+      }
+
+      h2 {
+        margin: 0 0 14px;
+        font-size: 18px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+
+      label {
+        display: block;
+        font-size: 14px;
+        margin-bottom: 6px;
+        color: var(--muted);
+      }
+
+      input,
+      select,
+      button {
+        width: 100%;
+        border-radius: 14px;
+        border: 1px solid var(--line);
+        padding: 12px 14px;
+        font: inherit;
+        background: #fffdf9;
+        color: var(--ink);
+      }
+
+      input[type="file"] {
+        padding: 10px;
+      }
+
+      .radio-row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .radio-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border: 1px solid var(--line);
+        padding: 10px 14px;
+        border-radius: 999px;
+        background: #fffdf9;
+        color: var(--ink);
+      }
+
+      .radio-pill input {
+        width: auto;
+        margin: 0;
+      }
+
+      .actions {
+        margin-top: 20px;
+      }
+
+      button {
+        background: var(--accent);
+        color: #fff9f4;
+        border-color: var(--accent);
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background: var(--accent-dark);
+      }
+
+      .hint,
+      .empty {
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .alert {
+        margin-bottom: 16px;
+        padding: 14px 16px;
+        border-radius: 16px;
+      }
+
+      .alert.error {
+        background: #fff1ec;
+        border: 1px solid #efc2b1;
+        color: #8d2f12;
+      }
+
+      .result-meta {
+        margin-bottom: 16px;
+        color: var(--muted);
+      }
+
+      .preview-box {
+        display: grid;
+        place-items: center;
+        min-height: 360px;
+        border-radius: 20px;
+        overflow: hidden;
+        background:
+          linear-gradient(135deg, rgba(177, 77, 43, 0.12), rgba(29, 29, 27, 0.02)),
+          repeating-linear-gradient(
+            45deg,
+            rgba(221, 207, 191, 0.35),
+            rgba(221, 207, 191, 0.35) 12px,
+            rgba(255, 250, 242, 0.85) 12px,
+            rgba(255, 250, 242, 0.85) 24px
+          );
+        border: 1px solid var(--line);
+      }
+
+      .preview-box img {
+        display: block;
+        max-width: 100%;
+        height: auto;
+      }
+
+      .link-row {
+        display: flex;
+        gap: 12px;
+        margin-top: 16px;
+        flex-wrap: wrap;
+      }
+
+      .link-button {
+        display: inline-block;
+        padding: 12px 16px;
+        border-radius: 999px;
+        text-decoration: none;
+        border: 1px solid var(--line);
+        color: var(--ink);
+        background: #fffdf9;
+      }
+
+      .input-disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+      }
+
+      .color-field {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 58px;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .color-picker {
+        padding: 6px;
+        height: 50px;
+        cursor: pointer;
+      }
+
+      @media (max-width: 920px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+
+        .preview-box {
+          min-height: 260px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <section class="hero">
+        <p class="eyebrow">Browser workflow</p>
+        <h1>Zoom GIF Maker</h1>
+        <p class="subtitle">
+          Upload a still image, choose the zoom target, and generate a looping GIF without touching the terminal.
+        </p>
+      </section>
+
+      <section class="layout">
+        <form class="panel" method="post" enctype="multipart/form-data">
+          <div class="section">
+            <h2>Input file</h2>
+            {% if error %}
+              <div class="alert error">{{ error }}</div>
+            {% endif %}
+            <label for="image">Image</label>
+            <input id="image" name="image" type="file" accept=".png,.jpg,.jpeg,.webp,.bmp" required>
+          </div>
+
+          <div class="section">
+            <h2>Crop</h2>
+            <div class="radio-row">
+              <label class="radio-pill">
+                <input type="radio" name="crop_mode" value="preset" {% if selected_crop_mode == "preset" %}checked{% endif %}>
+                Preset
+              </label>
+              <label class="radio-pill">
+                <input type="radio" name="crop_mode" value="custom" {% if selected_crop_mode == "custom" %}checked{% endif %}>
+                Custom coordinates
+              </label>
+            </div>
+
+            <div class="grid" style="margin-top: 14px;">
+              <div>
+                <label for="preset">Preset</label>
+                <select id="preset" name="preset">
+                  {% for preset in presets %}
+                    <option value="{{ preset }}" {% if preset == selected_preset %}selected{% endif %}>{{ preset }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div>
+                <label for="custom_crop">Coordinates `x1,y1,x2,y2`</label>
+                <input
+                  id="custom_crop"
+                  name="custom_crop"
+                  value="{{ custom_crop }}"
+                  placeholder="1100,0,2896,560"
+                  {% if selected_crop_mode == "preset" %}disabled{% endif %}
+                >
+              </div>
+            </div>
+            <p class="hint">In custom mode the coordinates must stay inside the source image bounds.</p>
+          </div>
+
+          <div class="section">
+            <h2>Output settings</h2>
+            <div class="grid">
+              <div>
+                <label for="width">GIF width</label>
+                <input id="width" name="width" type="number" min="100" step="10" value="{{ width }}">
+              </div>
+              <div>
+                <label for="fps">FPS</label>
+                <input id="fps" name="fps" type="number" min="1" max="60" value="{{ fps }}">
+              </div>
+              <div>
+                <label for="bg">Background `R,G,B`</label>
+                <div class="color-field">
+                  <input id="bg" name="bg" value="{{ bg }}">
+                  <input
+                    id="bg_picker"
+                    class="color-picker"
+                    type="color"
+                    value="#ffffff"
+                    aria-label="Background color picker"
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <h2>Animation timing</h2>
+            <div class="grid">
+              <div>
+                <label for="hold_start">Hold start (ms)</label>
+                <input id="hold_start" name="hold_start" type="number" min="0" step="100" value="{{ hold_start }}">
+              </div>
+              <div>
+                <label for="zoom_in">Zoom in (ms)</label>
+                <input id="zoom_in" name="zoom_in" type="number" min="100" step="100" value="{{ zoom_in }}">
+              </div>
+              <div>
+                <label for="hold_zoom">Hold zoom (ms)</label>
+                <input id="hold_zoom" name="hold_zoom" type="number" min="0" step="100" value="{{ hold_zoom }}">
+              </div>
+              <div>
+                <label for="zoom_out">Zoom out (ms)</label>
+                <input id="zoom_out" name="zoom_out" type="number" min="100" step="100" value="{{ zoom_out }}">
+              </div>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button type="submit">Generate GIF</button>
+          </div>
+        </form>
+
+        <aside class="panel preview">
+          {% if result_file %}
+            <p class="result-meta">Generated from: <strong>{{ original_name }}</strong></p>
+            <div class="preview-box">
+              <img src="{{ url_for('generated_file', filename=result_file) }}" alt="Generated GIF preview">
+            </div>
+            <div class="link-row">
+              <a class="link-button" href="{{ url_for('generated_file', filename=result_file) }}" target="_blank" rel="noreferrer">Open preview</a>
+              <a class="link-button" href="{{ url_for('download_file', filename=result_file) }}">Download GIF</a>
+            </div>
+          {% else %}
+            <div class="preview-box">
+              <p class="empty">
+                Your generated animation will appear here. The form uses the same settings as the CLI,
+                just in a browser-friendly wrapper.
+              </p>
+            </div>
+          {% endif %}
+        </aside>
+      </section>
+    </main>
+    <script>
+      const presetRadio = document.querySelector('input[name="crop_mode"][value="preset"]');
+      const customRadio = document.querySelector('input[name="crop_mode"][value="custom"]');
+      const presetSelect = document.getElementById("preset");
+      const customCropInput = document.getElementById("custom_crop");
+      const customCropLabel = document.querySelector('label[for="custom_crop"]');
+      const bgInput = document.getElementById("bg");
+      const bgPicker = document.getElementById("bg_picker");
+
+      function rgbToHex(rgb) {
+        const parts = rgb.split(",").map((part) => Number(part.trim()));
+        if (parts.length !== 3 || parts.some((part) => Number.isNaN(part) || part < 0 || part > 255)) {
+          return "#ffffff";
+        }
+        return `#${parts.map((part) => part.toString(16).padStart(2, "0")).join("")}`;
+      }
+
+      function hexToRgb(hex) {
+        const clean = hex.replace("#", "");
+        if (clean.length !== 6) {
+          return "255,255,255";
+        }
+        return [
+          parseInt(clean.slice(0, 2), 16),
+          parseInt(clean.slice(2, 4), 16),
+          parseInt(clean.slice(4, 6), 16),
+        ].join(",");
+      }
+
+      function updateCropMode() {
+        const presetMode = presetRadio.checked;
+        presetSelect.disabled = !presetMode;
+        customCropInput.disabled = presetMode;
+        customCropInput.classList.toggle("input-disabled", presetMode);
+        customCropLabel.classList.toggle("input-disabled", presetMode);
+      }
+
+      presetRadio.addEventListener("change", updateCropMode);
+      customRadio.addEventListener("change", updateCropMode);
+
+      bgPicker.value = rgbToHex(bgInput.value);
+      bgPicker.addEventListener("input", () => {
+        bgInput.value = hexToRgb(bgPicker.value);
+      });
+      bgInput.addEventListener("input", () => {
+        bgPicker.value = rgbToHex(bgInput.value);
+      });
+
+      updateCropMode();
+    </script>
+  </body>
+</html>

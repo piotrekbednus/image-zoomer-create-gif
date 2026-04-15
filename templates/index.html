@@ -233,6 +233,19 @@
         background: #fffdf9;
       }
 
+      .footer-note {
+        margin-top: 18px;
+        padding-top: 16px;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.6;
+      }
+
+      .footer-note a {
+        color: var(--accent-dark);
+      }
+
       .input-disabled {
         opacity: 0.55;
         cursor: not-allowed;
@@ -393,6 +406,10 @@
           {% endif %}
         </aside>
       </section>
+      <p class="footer-note">
+        Originally built while creating marketing visuals for
+        <a href="https://www.remindlo.co.uk/" target="_blank" rel="noreferrer">Remindlo, an automatic SMS reminder platform for service businesses</a>.
+      </p>
     </main>
     <script>
       const presetRadio = document.querySelector('input[name="crop_mode"][value="preset"]');
